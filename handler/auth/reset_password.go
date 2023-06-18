@@ -26,6 +26,7 @@ func ResetPasswordRenderHtmlHandler(c *gin.Context) {
 	c.HTML(http.StatusOK, "reset_password.html", data)   
 }
 
+
 func ResetPasswordHandler(c *gin.Context) {
 	resetToken := c.Param("reset-token")
 	newPassword := c.PostForm("newPassword") 
@@ -62,7 +63,7 @@ func ResetPasswordHandler(c *gin.Context) {
 	   return
 	 }
  
-	//update the password field
+	//update the password
 	update := bson.M{
 	  "$set": bson.M{"password": string(hashedPassword)},
 	  }

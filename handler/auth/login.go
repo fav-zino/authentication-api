@@ -6,19 +6,18 @@ import (
 	"user_management_system/db"
 	model "user_management_system/models"
 	"user_management_system/service"
+
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
-
-
 func LoginHandler(c *gin.Context) {
-  var requestBody struct {
-    Email    string `bson:"email" binding:"required,email"`
-    Password string `json:"password,omitempty" binding:"required,min=5"`
-  }
+	var requestBody struct {
+		Email    string `bson:"email"`//required
+		Password string `json:"password,omitempty" `//required
+	}
 
 	err := c.BindJSON(&requestBody)
 	if err != nil {
@@ -26,13 +25,13 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	if requestBody.Email == "" {
-	  c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "Missing required field: 'email'"})
-	  return
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Missing required field: 'email'"})
+		return
 	}
 
-	if  requestBody.Password == "" {
-	  c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "Missing required field: 'password'"})
-	  return
+	if requestBody.Password == "" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Missing required field: 'password'"})
+		return
 	}
 
 	//check if account exist
