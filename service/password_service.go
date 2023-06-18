@@ -1,7 +1,6 @@
 package service
 
 import (
-	// "fmt"
 	"log"
 	"strconv"
 	"time"
@@ -27,11 +26,9 @@ func SendResetPasswordEmail(toEmail string, resetLink string,userName string) er
     // Initialize the email message
     message := gomail.NewMessage()
     message.SetHeader("From", config.AppConfig.EmailUsername)
-    message.SetHeader("To", "ewomazinofavour22@gmail.com")
+    message.SetHeader("To",toEmail)
     message.SetHeader("Subject", "Reset Password")
     message.SetBody("text/html",messageBody)
-    
-    // Create a new email sending session
 	
     port, _ := strconv.Atoi(config.AppConfig.EmailSMTPPort)
     
@@ -55,7 +52,7 @@ func GenerateResetToken(userID string) (string, error) {
     // Set the claims
     claims := token.Claims.(jwt.MapClaims)
     claims["_id"] = userID
-    claims["exp"] = time.Now().Add(time.Minute * 30).Unix() // Expiration time is set to 15 minutes from now
+    claims["exp"] = time.Now().Add(time.Minute * 30).Unix() // Expiration time is set to 30 minutes from now
 
     // Sign the token with a secret key
     tokenString, err := token.SignedString([]byte(config.AppConfig.TokenSecret))

@@ -47,7 +47,7 @@ func ForgotPasswordHandler(c *gin.Context) {
 		return
 	}
 
-	resetLink  := fmt.Sprintf("%s/reset-password/%s",config.AppConfig.ApiURL,resetToken)
+	resetLink  := fmt.Sprintf("%s/auth/reset-password/%s",config.AppConfig.ApiURL,resetToken)
 
 	log.Print(config.AppConfig.ApiURL)
 

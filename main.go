@@ -34,9 +34,6 @@ func main() {
 
 	routes.LoadAuthRoutes(router)
 
-
-	
-
 	gin.SetMode(gin.DebugMode)
 	err := router.Run("localhost:8080")
 
