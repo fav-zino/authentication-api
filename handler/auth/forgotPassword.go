@@ -22,7 +22,7 @@ func ForgotPasswordHandler(c *gin.Context) {
 		Email string `json:"email" binding:"required,email"`
 	}
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Some error occured"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 	
@@ -30,7 +30,7 @@ func ForgotPasswordHandler(c *gin.Context) {
 	filter := bson.M{"email":  requestBody.Email }
 	err:=db.UserCollection.FindOne(context.Background(),filter).Decode(&existingUser)
 	 if err == mongo.ErrNoDocuments {
-		  c.IndentedJSON(http.StatusBadRequest,gin.H{"status":"error","message":"account not found"})
+		  c.IndentedJSON(http.StatusBadRequest,gin.H{"status":"error","message":"Account not found"})
 		  return
 	  } else if err != nil{
 		  c.IndentedJSON(http.StatusInternalServerError,gin.H{"status":"error","message": err})
@@ -43,7 +43,7 @@ func ForgotPasswordHandler(c *gin.Context) {
 	resetToken,err := service.GenerateResetToken(existingUser.ID.Hex())
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Some error occured"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 

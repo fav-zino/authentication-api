@@ -5,8 +5,7 @@ import (
 	"log"
 	"user_management_system/config"
 	"user_management_system/db"
-	"user_management_system/handler/auth"
-
+	"user_management_system/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -32,17 +31,8 @@ func main() {
 	 templateEngine.ParseGlob("view/*.html")
 	 router.SetHTMLTemplate(templateEngine)
 
-	  // Define a route group for allow route to have a common prefix
-	//   router := r.Group("/api")
 
-	router.POST("/signup", auth.SignupHandler)
-	router.POST("/login", auth.LoginHandler)
-	router.POST("/change-password", auth.ChangePasswordHandler)
-	router.POST("/forgot-password", auth.ForgotPasswordHandler)
-	//render html to reset password
-	router.GET("/reset-password/:reset-token", auth.ResetPasswordRenderHtmlHandler)
-	//reset the password
-	router.POST("/reset-password/:reset-token", auth.ResetPasswordHandler)
+	routes.LoadAuthRoutes(router)
 
 
 	

@@ -28,28 +28,25 @@ func ResetPasswordRenderHtmlHandler(c *gin.Context) {
 
 func ResetPasswordHandler(c *gin.Context) {
 	resetToken := c.Param("reset-token")
+	newPassword := c.PostForm("newPassword") 
+	confirmPassword := c.PostForm("confirmPassword")
 
 	userIDString, err := service.ValidateTokenAndReturnUserID(resetToken)
     if err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid reset token"})
         return
-    }
-
-	newPassword := c.PostForm("newPassword") 
-	confirmPassword := c.PostForm("confirmPassword") 
+    } 
   
 	if newPassword == "" || confirmPassword == "" {
 	  c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "password password must be entered"})
 	  return
 	}
 	
-  
 	if newPassword !=  confirmPassword  {
 	  c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "Password and confirm password must match"})
 	  return
 	}
 
-  
 	if (len(newPassword) < 5) || (len(confirmPassword) < 5)  {
 	  c.IndentedJSON(http.StatusBadRequest,gin.H{"status":"error","message":"Password too short, should be at least 5 characters long"})
 	  return
@@ -58,14 +55,13 @@ func ResetPasswordHandler(c *gin.Context) {
 	  //Convert the ID string to a primitive.ObjectID value
 	  userID, _ := primitive.ObjectIDFromHex(userIDString)
   
-  
 	 //hash new password
 	 hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	 if err !=nil {
 	   c.IndentedJSON(http.StatusInternalServerError,gin.H{"status":"error","message":err})
 	   return
 	 }
-  
+ 
 	//update the password field
 	update := bson.M{
 	  "$set": bson.M{"password": string(hashedPassword)},
@@ -76,8 +72,5 @@ func ResetPasswordHandler(c *gin.Context) {
 		  c.IndentedJSON(http.StatusInternalServerError, gin.H{"status":"error","message": err})
 		  return
 	  }
-
-  
-
     c.IndentedJSON(http.StatusOK, gin.H{"status":"success","message": "Password reset successful"})
 }

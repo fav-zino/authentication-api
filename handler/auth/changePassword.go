@@ -13,35 +13,43 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type ChangePassword struct{
-	TokenString string `json:"token"`
-	OldPassword string `json:"old_password"`
-	NewPassword string `json:"new_password"`
-}
+
 
 
 func ChangePasswordHandler(c *gin.Context){
-  var changePasswordBody ChangePassword
-  err:= c.BindJSON(&changePasswordBody); if err != nil{
-	  c.IndentedJSON(http.StatusBadRequest ,gin.H{"status":"error","message": "some error occured"})
+
+  var requestBody struct{
+    TokenString string `json:"token" binding:"required"`
+    OldPassword string `json:"old_password" binding:"required"`
+    NewPassword string `json:"new_password" binding:"required"`
+  }
+
+
+  err:= c.BindJSON(&requestBody); if err != nil{
+	  c.IndentedJSON(http.StatusBadRequest ,gin.H{"status":"error","message": err})
     return
   }
-  if changePasswordBody.OldPassword == "" || changePasswordBody.TokenString == "" {
-	c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "all required fields must be filled"})
+  if requestBody.OldPassword == ""  {
+	c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "Missing required field: 'old_password'"})
 	return
   }
 
-  if changePasswordBody.NewPassword == "" {
-    c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "New password must be entered"})
+  if requestBody.TokenString == "" {
+	c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "Missing required field: 'token'"})
+	return
+  }
+
+  if requestBody.NewPassword == "" {
+    c.IndentedJSON(http.StatusBadRequest,gin.H{"message": "Missing required field: 'new_password'"})
     return
   }
 
-  if len(changePasswordBody.NewPassword) < 5 {
+  if len(requestBody.NewPassword) < 5 {
     c.IndentedJSON(http.StatusBadRequest,gin.H{"status":"error","message":"New Password too short, should be at least 5 characters long"})
     return
   }
 
-  userIDString,err := service.ValidateTokenAndReturnUserID(changePasswordBody.TokenString)
+  userIDString,err := service.ValidateTokenAndReturnUserID(requestBody.TokenString)
      if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError,gin.H{"status":"error","message":err})
 		return
@@ -63,14 +71,14 @@ func ChangePasswordHandler(c *gin.Context){
     }
 
   //Compare the old password with the hash stored in mongo
-  err = bcrypt.CompareHashAndPassword([]byte(existingUser.Password),[]byte(changePasswordBody.OldPassword))
+  err = bcrypt.CompareHashAndPassword([]byte(existingUser.Password),[]byte(requestBody.OldPassword))
   if err !=nil {
     c.IndentedJSON(http.StatusBadRequest,gin.H{"status":"error","message":"Please enter the old password correctly"})
 	return
   }
 
    //hash new password
-   hashedPassword, err := bcrypt.GenerateFromPassword([]byte(changePasswordBody.NewPassword), bcrypt.DefaultCost)
+   hashedPassword, err := bcrypt.GenerateFromPassword([]byte(requestBody.NewPassword), bcrypt.DefaultCost)
    if err !=nil {
 	 c.IndentedJSON(http.StatusInternalServerError,gin.H{"status":"error","message":err})
 	 return
