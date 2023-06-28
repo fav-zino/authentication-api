@@ -17,7 +17,7 @@ func ConnectToDB() error{
 	if err != nil {
 		return err
 	}
-	UserCollection = client.Database("mydb").Collection("users")
+	UserCollection = client.Database("test").Collection("users")
 
 	index := mongo.IndexModel{
         Keys: bson.M{
