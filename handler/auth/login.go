@@ -1,23 +1,30 @@
 package auth
 
 import (
+	"authentication_api/db"
+	_ "authentication_api/docs"
+	model "authentication_api/models"
+	"authentication_api/service"
 	"context"
 	"net/http"
-	"user_management_system/db"
-	model "user_management_system/models"
-	"user_management_system/service"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary 	
+// @Description Login into user account
+// @Tags 		auth
+// @Accept 		json
+// @Produce 	json
+// @Success 	200 {object} loginResponseBody
+// @Param 		loginRequestBody body loginRequestBody true " "
+// @Router 		/auth/login [post]
 func LoginHandler(c *gin.Context) {
-	var requestBody struct {
-		Email    string `bson:"email"`//required
-		Password string `json:"password,omitempty" `//required
-	}
+	var requestBody loginRequestBody
 
 	err := c.BindJSON(&requestBody)
 	if err != nil {
@@ -60,12 +67,22 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	response := map[string]interface{}{
-		"_id":   existingUser.ID,
-		"name":  existingUser.Name,
-		"email": existingUser.Email,
+	response := loginResponseBody{
+		ID:   existingUser.ID,
+		Name:  existingUser.Name,
+		Email: existingUser.Email,
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "message": "login successfully", "token": tokenString, "user": response})
 
+}
+type loginRequestBody struct {
+	Email    string `json:"email"`
+	Password string `json:"password,omitempty" `
+}
+
+type loginResponseBody struct {
+	ID primitive.ObjectID `json:"_id"`
+	Email    string       `json:"email"`      
+	Name string `json:"name"`
 }

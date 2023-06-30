@@ -1,12 +1,12 @@
 package auth
 
 import (
+	"authentication_api/db"
+	model "authentication_api/models"
+	"authentication_api/service"
 	"context"
 	"net/http"
 	"regexp"
-	"user_management_system/db"
-	model "user_management_system/models"
-	"user_management_system/service"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,12 +14,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary     
+// @Description Create a user account
+// @Tags 		auth
+// @Accept 		json
+// @Produce 	json
+// @Success 	200 {object} signupResponseBody
+// @Param 		signupRequestBody body signupRequestBody true " "
+// @Router 		/auth/signup [post]
 func SignupHandler(c *gin.Context) {
-	var requestBody struct {
-		Name     string `json:"name" `//required
-		Email    string `bson:"email"`//required
-		Password string `json:"password" `//required
-	}
+	var requestBody signupRequestBody
+	
 
 	err := c.BindJSON(&requestBody)
 	if err != nil {
@@ -91,12 +96,25 @@ func SignupHandler(c *gin.Context) {
 		return
 	}
 
-	response := map[string]interface{}{
-		"_id":   result.InsertedID,
-		"name":  requestBody.Name,
-		"email": requestBody.Email,
+	response := signupResponseBody{
+		ID:   result.InsertedID,
+		Name:  requestBody.Name,
+		Email: requestBody.Email,
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "message": "user created successfully", "token": token, "user": response})
 
+}
+
+
+type signupRequestBody struct {
+	Name     string `json:"name" `     //required
+	Email    string `bson:"email"`     //required
+	Password string `json:"password" ` //required
+}
+
+type signupResponseBody struct {
+	ID interface{} `json:"_id"`
+	Email    string       `json:"email"`      
+	Name string `json:"name"`
 }

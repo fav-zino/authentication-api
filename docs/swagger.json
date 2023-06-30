@@ -1,0 +1,209 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Authentication API",
+        "contact": {}
+    },
+    "host": "localhost:3000",
+    "paths": {
+        "/auth/change-password": {
+            "post": {
+                "description": "Change password of user account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "changePasswordRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.changePasswordRequestBody"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/auth/forgot-password": {
+            "post": {
+                "description": "Forgot user password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "forgotPasswordRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.forgotPasswordRequestBody"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "description": "Login into user account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "loginRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.loginRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.loginResponseBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/signup": {
+            "post": {
+                "description": "Create a user account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "parameters": [
+                    {
+                        "description": " ",
+                        "name": "signupRequestBody",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.signupRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.signupResponseBody"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.changePasswordRequestBody": {
+            "type": "object",
+            "properties": {
+                "new_password": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "old_password": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "required",
+                    "type": "string"
+                }
+            }
+        },
+        "auth.forgotPasswordRequestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.loginRequestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.loginResponseBody": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.signupRequestBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "required",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "required",
+                    "type": "string"
+                }
+            }
+        },
+        "auth.signupResponseBody": {
+            "type": "object",
+            "properties": {
+                "_id": {},
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

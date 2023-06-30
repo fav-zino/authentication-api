@@ -1,11 +1,11 @@
 package auth
 
 import (
+	"authentication_api/db"
+	model "authentication_api/models"
+	"authentication_api/service"
 	"context"
 	"net/http"
-	"user_management_system/db"
-	model "user_management_system/models"
-	"user_management_system/service"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,13 +14,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary 	
+// @Description Change password of user account
+// @Tags 		auth
+// @Accept 		json
+// @Produce 	json
+// @Param 		changePasswordRequestBody body changePasswordRequestBody true " "
+// @Router /auth/change-password [post]
 func ChangePasswordHandler(c *gin.Context) {
 
-	var requestBody struct {
-		TokenString string `json:"token" `//required
-		OldPassword string `json:"old_password" `//required
-		NewPassword string `json:"new_password" `//required
-	}
+	var requestBody changePasswordRequestBody
 
 	err := c.BindJSON(&requestBody)
 	if err != nil {
@@ -96,3 +99,11 @@ func ChangePasswordHandler(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "message": "Password update successful"})
 
 }
+
+type changePasswordRequestBody struct {
+	TokenString string `json:"token" `        //required
+	OldPassword string `json:"old_password" ` //required
+	NewPassword string `json:"new_password" ` //required
+}
+
+

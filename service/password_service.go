@@ -1,69 +1,60 @@
 package service
 
 import (
+	"authentication_api/config"
 	"log"
 	"strconv"
 	"time"
-	"user_management_system/config"
 
 	"github.com/dgrijalva/jwt-go"
 	"gopkg.in/gomail.v2"
 )
 
+func SendResetPasswordEmail(toEmail string, resetLink string, userName string) error {
 
-
-func SendResetPasswordEmail(toEmail string, resetLink string,userName string) error {
-
-    messageBody := 
-    `<h1>Reset Password</h1>
-    <p>Hi `+userName+ `,</p>
+	messageBody :=
+		`<h1>Reset Password</h1>
+    <p>Hi ` + userName + `,</p>
     <p>We received a request to reset your password. To proceed, please click the link below:</p>
-    <p><a href="`+resetLink+ `" style="color:blue;">Reset Password</a></p>
+    <p><a href="` + resetLink + `" style="color:blue;">Reset Password</a></p>
     <p>If you didn't request a password reset, please ignore this email.</p>
     <p>Best regards,</p>
     <p>Kuro team</p>`
 
-    // Initialize the email message
-    message := gomail.NewMessage()
-    message.SetHeader("From", config.AppConfig.EmailUsername)
-    message.SetHeader("To",toEmail)
-    message.SetHeader("Subject", "Reset Password")
-    message.SetBody("text/html",messageBody)
-	
-    port, _ := strconv.Atoi(config.AppConfig.EmailSMTPPort)
-    
-    d := gomail.NewDialer(config.AppConfig.EmailSMTPHost, port, config.AppConfig.EmailUsername, config.AppConfig.EmailPassword)
-    
-    
-    // Send the email
-    if err := d.DialAndSend(message); err != nil {
-        log.Print(err)
-        return err
-    }
+	// Initialize the email message
+	message := gomail.NewMessage()
+	message.SetHeader("From", config.AppConfig.EmailUsername)
+	message.SetHeader("To", toEmail)
+	message.SetHeader("Subject", "Reset Password")
+	message.SetBody("text/html", messageBody)
 
-    return nil
+	port, _ := strconv.Atoi(config.AppConfig.EmailSMTPPort)
+
+	d := gomail.NewDialer(config.AppConfig.EmailSMTPHost, port, config.AppConfig.EmailUsername, config.AppConfig.EmailPassword)
+
+	// Send the email
+	if err := d.DialAndSend(message); err != nil {
+		log.Print(err)
+		return err
+	}
+
+	return nil
 }
-
 
 func GenerateResetToken(userID string) (string, error) {
-    // Create a new JWT token
-    token := jwt.New(jwt.SigningMethodHS256)
+	// Create a new JWT token
+	token := jwt.New(jwt.SigningMethodHS256)
 
-    // Set the claims
-    claims := token.Claims.(jwt.MapClaims)
-    claims["_id"] = userID
-    claims["exp"] = time.Now().Add(time.Minute * 30).Unix() // Expiration time is set to 30 minutes from now
+	// Set the claims
+	claims := token.Claims.(jwt.MapClaims)
+	claims["_id"] = userID
+	claims["exp"] = time.Now().Add(time.Minute * 30).Unix() // Expiration time is set to 30 minutes from now
 
-    // Sign the token with a secret key
-    tokenString, err := token.SignedString([]byte(config.AppConfig.TokenSecret))
-    if err != nil {
-        return "", err
-    }
+	// Sign the token with a secret key
+	tokenString, err := token.SignedString([]byte(config.AppConfig.TokenSecret))
+	if err != nil {
+		return "", err
+	}
 
-    return tokenString, nil
+	return tokenString, nil
 }
-
-
-
-
-

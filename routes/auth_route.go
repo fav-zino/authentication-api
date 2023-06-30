@@ -1,16 +1,15 @@
 package routes
 
 import (
-	"user_management_system/handler/auth"
+	"authentication_api/handler/auth"
 
 	"github.com/gin-gonic/gin"
 )
 
 func LoadAuthRoutes(router *gin.Engine) {
 
-
 	authRouter := router.Group("/auth")
-	
+
 	authRouter.POST("/signup", auth.SignupHandler)
 	authRouter.POST("/login", auth.LoginHandler)
 	authRouter.POST("/change-password", auth.ChangePasswordHandler)

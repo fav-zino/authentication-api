@@ -1,24 +1,29 @@
 package auth
 
 import (
+	"authentication_api/config"
+	"authentication_api/db"
+	model "authentication_api/models"
+	"authentication_api/service"
 	"context"
 	"fmt"
 	"log"
 	"net/http"
-	"user_management_system/config"
-	"user_management_system/db"
-	model "user_management_system/models"
-	"user_management_system/service"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// @Summary 	
+// @Description Forgot user password
+// @Tags 		auth
+// @Accept 		json
+// @Produce 	json
+// @Param 		forgotPasswordRequestBody body forgotPasswordRequestBody true " "
+// @Router /auth/forgot-password [post]
 func ForgotPasswordHandler(c *gin.Context) {
-	var requestBody struct {
-		Email string `json:"email"`//required
-	}
+	var requestBody forgotPasswordRequestBody
 	if err := c.BindJSON(&requestBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -55,3 +60,9 @@ func ForgotPasswordHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "A password reset email has been sent to your email"})
 }
+
+type forgotPasswordRequestBody struct {
+	Email    string `json:"email"`
+}
+
+

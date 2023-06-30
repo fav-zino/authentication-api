@@ -1,0 +1,136 @@
+definitions:
+  auth.changePasswordRequestBody:
+    properties:
+      new_password:
+        description: required
+        type: string
+      old_password:
+        description: required
+        type: string
+      token:
+        description: required
+        type: string
+    type: object
+  auth.forgotPasswordRequestBody:
+    properties:
+      email:
+        type: string
+    type: object
+  auth.loginRequestBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  auth.loginResponseBody:
+    properties:
+      _id:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  auth.signupRequestBody:
+    properties:
+      email:
+        description: required
+        type: string
+      name:
+        description: required
+        type: string
+      password:
+        description: required
+        type: string
+    type: object
+  auth.signupResponseBody:
+    properties:
+      _id: {}
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  title: Authentication API
+paths:
+  /auth/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Change password of user account
+      parameters:
+      - description: ' '
+        in: body
+        name: changePasswordRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/auth.changePasswordRequestBody'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - auth
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Forgot user password
+      parameters:
+      - description: ' '
+        in: body
+        name: forgotPasswordRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/auth.forgotPasswordRequestBody'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login into user account
+      parameters:
+      - description: ' '
+        in: body
+        name: loginRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/auth.loginRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.loginResponseBody'
+      tags:
+      - auth
+  /auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Create a user account
+      parameters:
+      - description: ' '
+        in: body
+        name: signupRequestBody
+        required: true
+        schema:
+          $ref: '#/definitions/auth.signupRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.signupResponseBody'
+      tags:
+      - auth
+swagger: "2.0"
