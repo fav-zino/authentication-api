@@ -30,7 +30,7 @@ func init() {
 }
 
 
-//documentation at /docs/index.html
+//documentation at localhost:3000/docs/index.html
 
 
 // @title Authentication API
@@ -57,14 +57,9 @@ func startGin() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "3000"
 	}
 	if err := router.Run(":" + port); err != nil {
 		log.Panicf("Error starting server: %s", err)
 	}
-	// gin.SetMode(gin.DebugMode)
-	// err := router.Run("localhost:8080")
-	// if err != nil {
-	// 	log.Fatal("Error starting server:", err)
-	// }
 }
